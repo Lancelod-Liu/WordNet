@@ -8,10 +8,10 @@ public class WordNet {
     private SAP sap;
     
 	public WordNet(String synsets, String hypernyms) {
-        st = new ArrayList<String>();
-   
+
         // First pass builds the index by reading strings to associate
         // distinct strings with an index
+        st = new ArrayList<String>();
         In in = new In(synsets);
         while (in.hasNextLine()) {
             String[] a = in.readLine().split(","); 
