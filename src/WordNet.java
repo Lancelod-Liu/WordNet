@@ -86,16 +86,9 @@ public class WordNet {
     public String sap(String nounA, String nounB){
     	if(!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
     	
-    	Stack<Integer> stA = (Stack<Integer>) sap.path(id(nounA), id(nounB))[0];
-    	Stack<Integer> stB = (Stack<Integer>) sap.path(id(nounA), id(nounB))[1];
-    	Queue<String> pA =new Queue<String>();
-    	Queue<String> pB =new Queue<String>();
+    	int acstr = sap.ancestor(id(nounA), id(nounB));
     	
-    	while(!stA.isEmpty()) 
-    		pA.enqueue(st.get(stA.pop()));
-    	while(!stB.isEmpty()) 
-    		pB.enqueue(st.get(stB.pop()));
-    	return pA.toString() + pB.toString();
+    	return st.get(acstr);
     }
     
 	public static void main(String[] args) {
@@ -105,7 +98,7 @@ public class WordNet {
 	     String[] nouns = {"Lepidocybium","discontentment"};
 	     
 	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
-	     StdOut.println("SAP "+"\n"+wn.sap(nouns[0],nouns[1]));
+	     StdOut.println("SAP "+":"+wn.sap(nouns[0],nouns[1]));
 	}
 
 }

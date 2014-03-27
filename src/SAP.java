@@ -2,7 +2,6 @@
 public class SAP {
 	private DeluxeBFS pv, pw;
 	private Digraph G;
-	private Stack<Integer>[] path;
 	private Queue<Integer> v,w;//cache for length & ancestor
 	private int iv,iw;
 	private int pathlen, acstr;
@@ -17,7 +16,6 @@ public class SAP {
 		pathlen = -1;
 		acstr = -1;
 		this.G = new Digraph(G);
-		path =(Stack<Integer>[]) new Stack[2];
 	}
 
 	// length of shortest ancestral path between v and w; -1 if no such path
@@ -109,11 +107,7 @@ public class SAP {
 				else continue;
 			}
 		}
-		if(acstr != -1)
-		{
-			path[0] = (Stack<Integer>) pv.pathTo(acstr);
-			path[1] = (Stack<Integer>) pw.pathTo(acstr);
-		}
+
 		return acstr;
 	}
 	
@@ -153,16 +147,12 @@ public class SAP {
 				else continue;
 			}
 		}
-		if(acstr != -1)
-		{
-			path[0] = (Stack<Integer>) pv.pathTo(acstr);
-			path[1] = (Stack<Integer>) pw.pathTo(acstr);
-		}
+
 		
 		return acstr;
 	}
 	
-	public Iterable<Integer>[] path(int v, int w){	
+/*	public Iterable<Integer>[] path(int v, int w){	
 		ancestor(v,w);
 		return this.path;
 	}
@@ -170,7 +160,7 @@ public class SAP {
 	public Iterable<Integer>[] path(Iterable<Integer> v, Iterable<Integer> w){	
 		ancestor(v,w);
 		return this.path;
-	}
+	}*/
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
