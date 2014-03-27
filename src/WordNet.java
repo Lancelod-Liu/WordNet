@@ -1,20 +1,21 @@
 
 import java.lang.*;
+import java.util.ArrayList;
 
 public class WordNet {
-    private ST<Integer, String> st;  // index  -> string
+    private ArrayList<String> st;  // index  -> string
     private Digraph G;
     private SAP sap;
     
 	public WordNet(String synsets, String hypernyms) {
-        st = new ST<Integer, String>();
-
+        st = new ArrayList<String>();
+   
         // First pass builds the index by reading strings to associate
         // distinct strings with an index
         In in = new In(synsets);
         while (in.hasNextLine()) {
             String[] a = in.readLine().split(","); 
-            st.put(Integer.parseInt(a[0]), a[1]);
+            st.add(a[1]);
         }
 
         StdOut.println("Dict build ok.");
@@ -40,7 +41,7 @@ public class WordNet {
 	// return -1 if fail
 	public Queue<Integer> id(String word) {
 		Queue<Integer> ids = (Queue<Integer>)new Queue();
-		for(int id : st.keys())
+		for(int id = 0; id < st.size(); id++)
     	{
 			//get every single word in a compact
     		String[] a = st.get(id).split(" ");
@@ -59,7 +60,7 @@ public class WordNet {
 	
     // is the word a WordNet noun?
     public boolean isNoun(String word){
-    	for(int id : st.keys())
+    	for(int id = 0; id < st.size(); id++)
     	{
     		String[] a = st.get(id).split(" ");
     		for(String s : a)
@@ -89,20 +90,19 @@ public class WordNet {
     	Stack<Integer> stB = (Stack<Integer>) sap.path(id(nounA), id(nounB))[1];
     	Queue<String> pA =new Queue<String>();
     	Queue<String> pB =new Queue<String>();
-    	pA.enqueue("["+nounA+"]");
-    	pB.enqueue("["+nounB+"]");
+    	
     	while(!stA.isEmpty()) 
-    		pA.enqueue("["+st.get(stA.pop())+"]");
+    		pA.enqueue(st.get(stA.pop()));
     	while(!stB.isEmpty()) 
-    		pB.enqueue("["+st.get(stB.pop())+"]");
-    	return nounA + ":" + pA + "\n"+nounB + ":" + pB;
+    		pB.enqueue(st.get(stB.pop()));
+    	return pA.toString() + pB.toString();
     }
     
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		//synsets.txt hypernyms.txt	     
 	     WordNet wn = new WordNet(args[0], args[1]);
-	     String[] nouns = {"dog","horse"};
+	     String[] nouns = {"Lepidocybium","discontentment"};
 	     
 	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
 	     StdOut.println("SAP "+"\n"+wn.sap(nouns[0],nouns[1]));
