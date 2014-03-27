@@ -20,15 +20,17 @@ public class Outcast {
 			for(String si : nouns)
 			{
 				temp += wn.distance(so, si);
+				if(temp > sum) 
+				{
+					sum = temp;
+					outcast = so;
+					break;
+				}
 			}
 			//long end = System.currentTimeMillis();
 		    //StdOut.println("word "+so+" cost: "+ (end-start)+" msec");
 			//StdOut.println(so + " : "+temp);
-			if(temp > sum)
-			{
-				sum = temp;
-				outcast = so;
-			}
+			
 		}
 		return outcast;
 	}
@@ -38,7 +40,10 @@ public class Outcast {
 	    Outcast outcast = new Outcast(wordnet);
 	    for (int t = 2; t < args.length; t++) {
 	        String[] nouns = In.readStrings(args[t]);
+	        long start = System.currentTimeMillis();
 	        StdOut.println(args[t] + ": " + outcast.outcast(nouns));
+	        long end = System.currentTimeMillis();
+	        StdOut.println(args[t] + ": " + (end - start)/1000.0 + "s");
 	    }
 	}
 
