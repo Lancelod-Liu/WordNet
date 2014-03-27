@@ -15,7 +15,7 @@ public class Outcast {
 		{
 			String so = nouns[o];
 			int temp = 0;
-			//calculate the distance of every noun
+			//calculate the distance of every nouns
 			//long start = System.currentTimeMillis();
 			for(String si : nouns)
 			{
