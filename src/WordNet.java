@@ -77,6 +77,7 @@ public class WordNet {
     public int distance(String nounA, String nounB){
     	if(isNoun(nounA) && isNoun(nounB))
     	{
+    		//StdOut.println(nounA+id(nounA).toString()+" "+nounB+id(nounB).toString());
     		return sap.length(id(nounA), id(nounB));
     	}
     	else throw new IllegalArgumentException();
@@ -87,7 +88,6 @@ public class WordNet {
     	if(!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
     	
     	int acstr = sap.ancestor(id(nounA), id(nounB));
-    	
     	return st.get(acstr);
     }
     

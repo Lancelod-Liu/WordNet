@@ -1,16 +1,18 @@
+import java.util.ArrayList;
+
 
 public class SAP {
 	private DeluxeBFS pv, pw;
 	private Digraph G;
-	private Queue<Integer> v,w;//cache for length & ancestor
+	private ArrayList<String> v,w;//cache for length & ancestor
 	private int iv,iw;
 	private int pathlen, acstr;
 	// constructor takes a digraph (not necessarily a DAG)
 	public SAP(Digraph G){
 		pv = null;
 		pw = null;
-		v = null;
-		w = null;
+		v = (ArrayList<String>)new ArrayList();
+		w = (ArrayList<String>)new ArrayList();
 		iv = -1;
 		iw = -1;
 		pathlen = -1;
@@ -45,10 +47,17 @@ public class SAP {
 
 	// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
 	public int length(Iterable<Integer> v, Iterable<Integer> w){
-		if(this.v != null && this.w != null && this.v.equals(v) && this.w.equals(w))
+		if(this.v.size() > 0 && this.w.size() > 0
+				&& (this.v.contains(v.toString())&& this.w.contains(w.toString()))
+				|| (this.v.contains(w.toString())&& this.w.contains(v.toString()))
+		  )
 		{
+			StdOut.print(this.v.size()+"->");
 			return pathlen;
 		}
+		//need to calculate
+		this.v.add(v.toString());
+		this.w.add(w.toString());
 		//Check for input		
 		for(int vv : v)
 		{
@@ -75,6 +84,7 @@ public class SAP {
 				}
 				else continue;
 			}
+			
 		}
 		return pathlen;
 	}
@@ -113,10 +123,17 @@ public class SAP {
 	
 	// a common ancestor that participates in shortest ancestral path; -1 if no such path
 	public int ancestor(Iterable<Integer> v, Iterable<Integer> w){
-		if(this.v != null && this.w != null && this.v.equals(v) && this.w.equals(w))
+		if(this.v.size() > 0 && this.w.size() > 0
+			&& (this.v.contains(v.toString())&& this.w.contains(w.toString()))
+			|| (this.v.contains(w.toString())&& this.w.contains(v.toString()))
+		  )
 		{
+			//StdOut.print(vw.size()+"->");
 			return acstr;
 		}
+		//need to calculate
+		this.v.add(v.toString());
+		this.w.add(w.toString());	
 		//Check for input
 		for(int vv : v)
 		{
