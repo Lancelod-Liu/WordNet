@@ -19,8 +19,6 @@ public class Outcast {
     int maxlen = 0;
     String outcast = null;
     String[] strPair = new String[2];
-    strPair[0] = new String();
-    strPair[1] = new String();
     for (int o = 0; o < nouns.length; o++) //calculate the distance of every nouns pair
     {
       String so = nouns[o];
