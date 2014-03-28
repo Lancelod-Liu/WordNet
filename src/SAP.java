@@ -18,7 +18,6 @@ public class SAP {
 
   // length of shortest ancestral path between v and w; -1 if  no such path
   public int length(int v, int w) {
-
     if (v < 0 || v >= G.V() || w < 0 || w >= G.V()) 
       throw new IndexOutOfBoundsException();
     pathlen = -1; //initialize pathlen

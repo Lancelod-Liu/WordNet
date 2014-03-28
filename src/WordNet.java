@@ -98,16 +98,10 @@ public class WordNet {
     
   public static void main(String[] args) {
     //synsets.txt hypernyms.txt       
-/*       WordNet wn = new WordNet(args[0], args[1]);
+       WordNet wn = new WordNet(args[0], args[1]);
        String[] nouns = {"Lepidocybium", "discontentment"};
-       long start=System.currentTimeMillis(), cnt = 0;
-       while(System.currentTimeMillis() - start < 5000)
-       {
-         wn.sap(nouns[0], nouns[1]);
-         wn.distance(nouns[0], nouns[1]);
-         StdOut.println(cnt++);
-       }*/
        
+       StdOut.println(wn.sap(nouns[0], nouns[1]) + " " + wn.distance(nouns[0], nouns[1]));
        
      /*  Set<String> set1 = new HashSet<String>();
        Set<String> set2 = new HashSet<String>();
