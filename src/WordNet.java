@@ -97,8 +97,18 @@ public class WordNet {
 	     WordNet wn = new WordNet(args[0], args[1]);
 	     String[] nouns = {"Lepidocybium","discontentment"};
 	     
+	     long start = System.currentTimeMillis();
 	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
-	     StdOut.println("SAP "+":"+wn.sap(nouns[0],nouns[1]));
+	     long end = System.currentTimeMillis();
+	     StdOut.println("Cost "+ (end-start)/1000.0);
+	     start = System.currentTimeMillis();
+	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
+	     end = System.currentTimeMillis();
+	     StdOut.println("Cost "+ (end-start)/1000.0);
+	     start = System.currentTimeMillis();
+	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
+	     end = System.currentTimeMillis();
+	     StdOut.println("Cost "+ (end-start)/1000.0);
 	}
 
 }

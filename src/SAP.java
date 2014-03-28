@@ -4,30 +4,32 @@ import java.util.ArrayList;
 public class SAP {
 	private DeluxeBFS pv, pw;
 	private Digraph G;
-	private ArrayList<String> v,w;//cache for length & ancestor
-	private int iv,iw;
+	private Queue<Integer> qv,qw;
 	private int pathlen, acstr;
+	private int iv,iw;
 	// constructor takes a digraph (not necessarily a DAG)
 	public SAP(Digraph G){
 		pv = null;
 		pw = null;
-		v = (ArrayList<String>)new ArrayList();
-		w = (ArrayList<String>)new ArrayList();
-		iv = -1;
-		iw = -1;
 		pathlen = -1;
 		acstr = -1;
+		qv = new Queue<Integer>();
+		qw = new Queue<Integer>();
+		iv = 0;
+		iw = 0;
 		this.G = new Digraph(G);
 	}
 
 	// length of shortest ancestral path between v and w; -1 if no such path
 	public int length(int v, int w){
-		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
-		if(iv == v && iv == w)
+		if(iv == v && iw == w || iv == w && iw ==v)
 		{
 			return pathlen;
 		}
+		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
 		pathlen = -1;//initialize pathlen
+		iv = v;
+		iw = w;
 		pv = new DeluxeBFS(G, v);
 		pw = new DeluxeBFS(G, w);
 		for(int i = 0; i < G.V(); i++)
@@ -46,18 +48,12 @@ public class SAP {
 	}
 
 	// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-	public int length(Iterable<Integer> v, Iterable<Integer> w){
-		if(this.v.size() > 0 && this.w.size() > 0
-				&& (this.v.contains(v.toString())&& this.w.contains(w.toString()))
-				|| (this.v.contains(w.toString())&& this.w.contains(v.toString()))
-		  )
+	public int length(Iterable<Integer> v, Iterable<Integer> w){		
+		if(qv.equals(v) && qw.equals(w) || qv.equals(w) && qw.equals(v))
 		{
-			StdOut.print(this.v.size()+"->");
+			StdOut.println("same!");
 			return pathlen;
 		}
-		//need to calculate
-		this.v.add(v.toString());
-		this.w.add(w.toString());
 		//Check for input		
 		for(int vv : v)
 		{
@@ -68,6 +64,8 @@ public class SAP {
 			if(ww < 0 || ww >= G.V()) throw new IndexOutOfBoundsException();
 		}
 		pathlen = -1;//initialize pathlen
+		qv = (Queue<Integer>) v;
+		qw = (Queue<Integer>) w;
 		pv = new DeluxeBFS(G, v);
 		pw = new DeluxeBFS(G, w);
 		for(int i = 0; i < G.V(); i++)
@@ -91,13 +89,15 @@ public class SAP {
 
 	// a common ancestor of v and w that participates in a shortest ancestral path; -1 if no such path
 	public int ancestor(int v, int w){
-		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
-		if(iv == v && iv == w)
+		if(iv == v && iw == w || iv == w && iw ==v)
 		{
-			return acstr;
+			return pathlen;
 		}
+		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
+
 		pathlen = -1;//initialize pathlen acstor
 		acstr = -1;
+		
 		pv = new DeluxeBFS(G, v);
 		pw = new DeluxeBFS(G, w);
 		for(int i = 0; i < G.V(); i++)
@@ -122,18 +122,11 @@ public class SAP {
 	}
 	
 	// a common ancestor that participates in shortest ancestral path; -1 if no such path
-	public int ancestor(Iterable<Integer> v, Iterable<Integer> w){
-		if(this.v.size() > 0 && this.w.size() > 0
-			&& (this.v.contains(v.toString())&& this.w.contains(w.toString()))
-			|| (this.v.contains(w.toString())&& this.w.contains(v.toString()))
-		  )
+	public int ancestor(Iterable<Integer> v, Iterable<Integer> w){	
+		if(this.qv == v && this.qw == w || this.qv == w && this.qw ==v)
 		{
-			//StdOut.print(vw.size()+"->");
 			return acstr;
 		}
-		//need to calculate
-		this.v.add(v.toString());
-		this.w.add(w.toString());	
 		//Check for input
 		for(int vv : v)
 		{
@@ -145,6 +138,8 @@ public class SAP {
 		}
 		pathlen = -1;//initialize pathlen acstor
 		acstr = -1;
+		qv = (Queue<Integer>) v;
+		qw = (Queue<Integer>) w;
 		pv = new DeluxeBFS(G, v);
 		pw = new DeluxeBFS(G, w);
 		for(int i = 0; i < G.V(); i++)
