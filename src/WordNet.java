@@ -38,7 +38,7 @@ public class WordNet {
   // find the first id related to the input word
   // return -1 if  fail
   private ArrayList<Integer> id(String word) {
-	  ArrayList<Integer> ids = new ArrayList<Integer>();
+    ArrayList<Integer> ids = new ArrayList<Integer>();
     for (int id = 0; id < st.size(); id++)
       {
       //get every single word in a compact

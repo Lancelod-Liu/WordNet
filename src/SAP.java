@@ -10,16 +10,16 @@ public class SAP {
   private BreadthFirstDirectedPaths pv, pw;
   private Digraph G;
   private int pathlen, acstr;
-  private HashMap<int[], int[]> sapCache; //first array for v-w, second for pathlen & acstr
-  private HashMap<String[], int[]> isapCache;
+  private HashMap<Integer[], Integer[]> sapCache; //first array for v-w, second for pathlen & acstr
+  private HashMap<String[], Integer[]> isapCache;
   // constructor takes a digraph (not necessarily a DAG)
   public SAP(Digraph G) {
     pv = null;
     pw = null;
     pathlen = -1;
     acstr = -1;
-    sapCache = new HashMap<int[], int[]>();
-    isapCache = new HashMap<String[], int[]>();
+    sapCache = new HashMap<Integer[], Integer[]>();
+    isapCache = new HashMap<String[], Integer[]>();
     this.G = new Digraph(G);
   }
 
@@ -29,12 +29,12 @@ public class SAP {
     if (v < 0 || v >= G.V() || w < 0 || w >= G.V()) 
       throw new IndexOutOfBoundsException();
     //build key
-    int[] vw = new int[] {v, w};
-    int[] wv = new int[] {w, v};
+    Integer[] vw = new Integer[] {Integer.valueOf(v), Integer.valueOf(w)};
+    Integer[] wv = new Integer[] {Integer.valueOf(w), Integer.valueOf(v)};
     //check key
-    if(sapCache.containsKey(vw) || sapCache.containsKey(wv)) 
+    if (sapCache.containsKey(vw) || sapCache.containsKey(wv)) 
     {
-        return sapCache.get(vw)[0];
+        return sapCache.get(vw)[0].intValue();
     }
     //need to calculate
     pathlen = -1; //initialize pathlen
@@ -57,7 +57,7 @@ public class SAP {
       }
     }
     //build the cache
-    sapCache.put(vw, new int[] {pathlen, acstr});
+    sapCache.put(vw, new Integer[] {Integer.valueOf(pathlen), Integer.valueOf(acstr)});
     return pathlen;
   }
 
@@ -78,9 +78,9 @@ public class SAP {
     String[] vw = new String[] {v.toString(), w.toString()};
     String[] wv = new String[] {w.toString(), v.toString()};
   //check key
-    if(sapCache.containsKey(vw) || sapCache.containsKey(wv)) //cache is available
+    if (isapCache.containsKey(vw) || isapCache.containsKey(wv)) //cache is available
     {
-        return sapCache.get(vw)[0];
+        return isapCache.get(vw)[0].intValue();
     }
     //initialize pathlen
     pathlen = -1;
@@ -105,7 +105,7 @@ public class SAP {
       }
     }
   //build the cache
-    isapCache.put(vw, new int[] {pathlen, acstr});
+    isapCache.put(vw, new Integer[] {Integer.valueOf(pathlen), Integer.valueOf(acstr)});
     return pathlen;
   }
 
@@ -114,11 +114,11 @@ public class SAP {
     //check input
     if (v < 0 || v >= G.V() || w < 0 || w >= G.V()) 
       throw new IndexOutOfBoundsException();
-    int[] vw = new int[] {v, w};
-    int[] wv = new int[] {w, v};
-    if(sapCache.containsKey(vw) || sapCache.containsKey(wv)) //cache is available
+    Integer[] vw = new Integer[] {Integer.valueOf(v), Integer.valueOf(w)};
+    Integer[] wv = new Integer[] {Integer.valueOf(w), Integer.valueOf(v)};
+    if (sapCache.containsKey(vw) || sapCache.containsKey(wv)) //cache is available
     {
-        return sapCache.get(vw)[1];
+        return sapCache.get(vw)[1].intValue();
     }
     //need to calculate
     pathlen = -1; //initialize pathlen acstor
@@ -143,7 +143,7 @@ public class SAP {
       }
     }
     //build the cache
-    sapCache.put(vw, new int[] {pathlen, acstr});
+    sapCache.put(vw, new Integer[] {Integer.valueOf(pathlen), Integer.valueOf(acstr)});
     return acstr;
   }
   
@@ -164,9 +164,9 @@ public class SAP {
     String[] vw = new String[] {v.toString(), w.toString()};
     String[] wv = new String[] {w.toString(), v.toString()};
     //check key
-    if(sapCache.containsKey(vw) || sapCache.containsKey(wv)) //cache is available
+    if (isapCache.containsKey(vw) || isapCache.containsKey(wv)) //cache is available
     {
-        return sapCache.get(vw)[1];
+        return isapCache.get(vw)[1].intValue();
     }
     pathlen = -1; //initialize pathlen acstor
     acstr = -1;
@@ -190,7 +190,7 @@ public class SAP {
       }
     }
     //build the cache
-    isapCache.put(vw, new int[] {pathlen, acstr});
+    isapCache.put(vw, new Integer[] {Integer.valueOf(pathlen), Integer.valueOf(acstr)});
     
     return acstr;
   }
