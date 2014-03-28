@@ -44,7 +44,7 @@ public class DeluxeBFS {
     private boolean[] marked;  // marked[v] = is there an s->v path?
     private int[] edgeTo;      // edgeTo[v] = last edge on shortest s->v path
     private int[] distTo;      // distTo[v] = length of shortest s->v path
-    private static Queue<Integer> needInit = (Queue<Integer>)new Queue();
+    private static Queue<Integer> needInit = new Queue<Integer>();
     /**
      * Computes the shortest path from <tt>s</tt> and every other vertex in graph <tt>G</tt>.
      * @param G the digraph

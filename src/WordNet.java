@@ -1,6 +1,10 @@
-
-import java.lang.*;
+/*
+ * Filename : WordNet.java
+ * Function : Build a digraph describing a wordnet
+ * Important Interface : Calculate distance between two input words
+*/
 import java.util.ArrayList;
+
 
 public class WordNet {
     private ArrayList<String> st;  // index  -> string
@@ -40,7 +44,7 @@ public class WordNet {
 	// find the first id related to the input word
 	// return -1 if fail
 	public Queue<Integer> id(String word) {
-		Queue<Integer> ids = (Queue<Integer>)new Queue();
+		Queue<Integer> ids = new Queue<Integer>();
 		for(int id = 0; id < st.size(); id++)
     	{
 			//get every single word in a compact
@@ -77,38 +81,36 @@ public class WordNet {
     public int distance(String nounA, String nounB){
     	if(isNoun(nounA) && isNoun(nounB))
     	{
-    		//StdOut.println(nounA+id(nounA).toString()+" "+nounB+id(nounB).toString());
-    		return sap.length(id(nounA), id(nounB));
+    		if(nounA.equals(nounB)) 
+    			return 0;
+    		else 
+    			return sap.length(id(nounA), id(nounB));
     	}
     	else throw new IllegalArgumentException();
     }
     
     // in a shortest ancestral path (defined below)
     public String sap(String nounA, String nounB){
-    	if(!isNoun(nounA) || !isNoun(nounB)) throw new IllegalArgumentException();
-    	
+    	if(!isNoun(nounA) || !isNoun(nounB)) 
+    		throw new IllegalArgumentException();  
     	int acstr = sap.ancestor(id(nounA), id(nounB));
     	return st.get(acstr);
     }
     
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		//synsets.txt hypernyms.txt	     
 	     WordNet wn = new WordNet(args[0], args[1]);
 	     String[] nouns = {"Lepidocybium","discontentment"};
 	     
-	     long start = System.currentTimeMillis();
 	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
-	     long end = System.currentTimeMillis();
-	     StdOut.println("Cost "+ (end-start)/1000.0);
-	     start = System.currentTimeMillis();
-	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
-	     end = System.currentTimeMillis();
-	     StdOut.println("Cost "+ (end-start)/1000.0);
-	     start = System.currentTimeMillis();
-	     StdOut.println("dist of "+nouns[0]+" & "+nouns[1]+": "+wn.distance(nouns[0],nouns[1]));
-	     end = System.currentTimeMillis();
-	     StdOut.println("Cost "+ (end-start)/1000.0);
+	     
+	   /*  Set<String> set1 = new HashSet<String>();
+	     Set<String> set2 = new HashSet<String>();
+	     String s1 = new String("a");String s2 = new String("b");
+	     String s3 = new String("b");
+	     set1.add(s1);set1.add(s2);	     
+	     set2.add(s3);set2.add(s1);
+	     StdOut.println(set1.equals(set2));*/
 	}
 
 }

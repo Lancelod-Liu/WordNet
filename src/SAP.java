@@ -1,6 +1,8 @@
-import java.util.ArrayList;
-
-
+/*
+ * Filename : SAP.java
+ * Function : Represent a shortest ancestor path
+ * Important Interface : Find shortest path between input point(or set) v and w
+*/
 public class SAP {
 	private DeluxeBFS pv, pw;
 	private Digraph G;
@@ -26,7 +28,8 @@ public class SAP {
 		{
 			return pathlen;
 		}
-		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
+		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) 
+			throw new IndexOutOfBoundsException();
 		pathlen = -1;//initialize pathlen
 		iv = v;
 		iw = w;
@@ -48,26 +51,32 @@ public class SAP {
 	}
 
 	// length of shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path
-	public int length(Iterable<Integer> v, Iterable<Integer> w){		
-		if(qv.equals(v) && qw.equals(w) || qv.equals(w) && qw.equals(v))
+	public int length(Iterable<Integer> v, Iterable<Integer> w){
+		if(qv.toString().equals(v.toString()) && qw.toString().equals(w.toString()) 
+		|| qv.toString().equals(w.toString()) && qw.toString().equals(v.toString()))
 		{
-			StdOut.println("same!");
+			//StdOut.println("same!");
 			return pathlen;
 		}
 		//Check for input		
 		for(int vv : v)
 		{
-			if(vv < 0 || vv >= G.V()) throw new IndexOutOfBoundsException();
+			if(vv < 0 || vv >= G.V()) 
+				throw new IndexOutOfBoundsException();
 		}
 		for(int ww : w)
 		{
-			if(ww < 0 || ww >= G.V()) throw new IndexOutOfBoundsException();
+			if(ww < 0 || ww >= G.V()) 
+				throw new IndexOutOfBoundsException();
 		}
-		pathlen = -1;//initialize pathlen
+		//initialize pathlen
+		pathlen = -1;
 		qv = (Queue<Integer>) v;
 		qw = (Queue<Integer>) w;
+		
 		pv = new DeluxeBFS(G, v);
 		pw = new DeluxeBFS(G, w);
+		
 		for(int i = 0; i < G.V(); i++)
 		{
 			if(pv.hasPathTo(i) && pw.hasPathTo(i))
@@ -84,6 +93,7 @@ public class SAP {
 			}
 			
 		}
+		
 		return pathlen;
 	}
 
@@ -93,7 +103,8 @@ public class SAP {
 		{
 			return pathlen;
 		}
-		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) throw new IndexOutOfBoundsException();
+		if(v < 0 || v >= G.V() || w < 0 || w >= G.V()) 
+			throw new IndexOutOfBoundsException();
 
 		pathlen = -1;//initialize pathlen acstor
 		acstr = -1;
@@ -130,11 +141,13 @@ public class SAP {
 		//Check for input
 		for(int vv : v)
 		{
-			if(vv < 0 || vv >= G.V()) throw new IndexOutOfBoundsException();
+			if(vv < 0 || vv >= G.V()) 
+				throw new IndexOutOfBoundsException();
 		}
 		for(int ww : w)
 		{
-			if(ww < 0 || ww >= G.V()) throw new IndexOutOfBoundsException();
+			if(ww < 0 || ww >= G.V()) 
+				throw new IndexOutOfBoundsException();
 		}
 		pathlen = -1;//initialize pathlen acstor
 		acstr = -1;
@@ -175,7 +188,6 @@ public class SAP {
 	}*/
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		In in = new In("digraph1.txt");
 	    Digraph G = new Digraph(in);
 	    SAP sap = new SAP(G);
