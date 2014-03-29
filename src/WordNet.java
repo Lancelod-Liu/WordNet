@@ -10,7 +10,7 @@ public class WordNet {
     private ArrayList<String> st;  // index  -> string
     private Digraph G;
     private SAP sap;
-    private HashMap<String[], Integer> distCache, acstrCache;
+    private HashMap<String, ArrayList<Integer>> idset;
     
   public WordNet(String synsets, String hypernyms) {
     // First pass builds the index by reading strings to associate
@@ -21,7 +21,27 @@ public class WordNet {
       String[] a = in.readLine().split(","); 
       st.add(a[1]);
     }
-    
+    // create a cache set to link one word to a set of ids
+    idset = new HashMap<String, ArrayList<Integer>>();
+    for (int id = 0; id < st.size(); id++)
+    {
+      String[] a = st.get(id).split(" ");
+      for (String ss : a)
+      {
+        ArrayList<Integer> idtemp = new ArrayList<Integer>();
+        if (idset.containsKey(ss))
+        {
+          idtemp = idset.get(ss); //read the old idset
+          idtemp.add(id); //refresh the idset
+          idset.put(ss, idtemp);
+        }
+        else
+        {
+          idtemp.add(id);
+          idset.put(ss, idtemp);
+        }
+      }
+    }
     // second pass builds the digraph by connecting first vertex on each
     // line to all others
     G = new Digraph(st.size());
@@ -35,44 +55,22 @@ public class WordNet {
       }
     }
     sap = new SAP(G);
-    distCache = new HashMap<String[], Integer>();
-    acstrCache = new HashMap<String[], Integer>();
+    
   }
   
-  // find the first id related to the input word
-  // return -1 if  fail
-  private ArrayList<Integer> id(String word) {
-    ArrayList<Integer> ids = new ArrayList<Integer>();
-    for (int id = 0; id < st.size(); id++)
-      {
-      //get every single word in a compact
-      String[] a = st.get(id).split(" ");
-      for (String s : a)
-      {
-        if (s.equals(word)) 
-          ids.add(id);
-      }                  
-    }
-      return ids;
-  }
 
   // the set of nouns (no duplicates), returned as an Iterable
   public Iterable<String> nouns()
   {
+
     return st;
   }
   
     // is the word a WordNet noun?
   public boolean isNoun(String word) {
-    for (String id : st)
-    {
-      String[] a = id.split(" ");
-      for (String s : a)
-      {
-          if (s.equals(word)) 
-            return true;
-      }      
-    }
+
+    if (idset.containsKey(word)) 
+      return true;
     return false;
   }
     
@@ -82,39 +80,19 @@ public class WordNet {
     {
       if (nounA.equals(nounB)) 
         return 0;
-      else if (distCache.containsKey(new String[]{nounA, nounB}) 
-             || distCache.containsKey(new String[]{nounB, nounA}))
-              return distCache.get(new String[]{nounB, nounA});
-      else
-      {
-        int length = sap.length(id(nounA), id(nounB));
-        distCache.put(new String[]{nounB, nounA}, length);
-        return length;
-      }
-        
-    }
+      int length = sap.length(idset.get(nounA), idset.get(nounB));
+      return length;
+     }
     else 
       throw new IllegalArgumentException();
   }
   
   // in a shortest ancestral path (defined below)
   public String sap(String nounA, String nounB) {
-   /* if (!isNoun(nounA) || !isNoun(nounB)) 
-      throw new IllegalArgumentException();  
-    
-    int acstr = sap.ancestor(id(nounA), id(nounB));
-    return st.get(acstr);*/
     if (isNoun(nounA) && isNoun(nounB))
     {
-      int acstr = -1;
-      if (acstrCache.containsKey(new String[]{nounA, nounB}) 
-             || acstrCache.containsKey(new String[]{nounB, nounA}))
-        acstr = acstrCache.get(new String[]{nounB, nounA});
-      else
-      {
-        acstr = sap.ancestor(id(nounA), id(nounB));
-        acstrCache.put(new String[]{nounB, nounA}, acstr);
-      }
+      int acstr = -1;  
+      acstr = sap.ancestor(idset.get(nounA), idset.get(nounB));
       return st.get(acstr);
     }
     else 
@@ -123,17 +101,22 @@ public class WordNet {
     
   public static void main(String[] args) {
     //synsets.txt hypernyms.txt       
-       WordNet wn = new WordNet(args[0], args[1]);
+/*       WordNet wn = new WordNet(args[0], args[1]);
        String[] nouns = {"Lepidocybium", "discontentment"};
        long start, cnt = 0;
        start = System.currentTimeMillis();
-       while(System.currentTimeMillis() - start < 5000)
+       while (System.currentTimeMillis() - start < 3000)
+       {
+         wn.distance(nouns[0], nouns[1]);
+       }
+       start = System.currentTimeMillis();
+       while (System.currentTimeMillis() - start < 3000)
        {
          wn.distance(nouns[0], nouns[1]);
          cnt++;
        }
-       StdOut.println(" cnt: "+ cnt);
-       //StdOut.println(wn.sap(nouns[0], nouns[1]) + " " + wn.distance(nouns[0], nouns[1]));
+       StdOut.println(" speed: "+ cnt/3);
+       StdOut.println(wn.sap(nouns[0], nouns[1]) + " " + wn.distance(nouns[0], nouns[1]));*/
       
 
   }

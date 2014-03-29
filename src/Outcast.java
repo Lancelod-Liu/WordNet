@@ -62,15 +62,7 @@ public class Outcast {
    for (int t = 2; t < args.length; t++) {
      String[] nouns = In.readStrings(args[t]);
      StdOut.println(args[t] + ": " + outcast.outcast(nouns));
-   }
-/*   HashMap<String, Integer> tt = new HashMap<String, Integer>(); //Store the calculated path  
-   String s = new String();
-   s = "1";tt.put(s,1);
-   s = new String();
-   s = "1";
-   StdOut.println(s.toString());*/
-   
-   
+   }  
      /*long start, end;
    start = System.currentTimeMillis();
    end = System.currentTimeMillis();
