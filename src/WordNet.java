@@ -4,11 +4,13 @@
  * Important Interface : Calculate distance between two input words
 */
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WordNet {
     private ArrayList<String> st;  // index  -> string
     private Digraph G;
     private SAP sap;
+    private HashMap<String[], Integer> distCache, acstrCache;
     
   public WordNet(String synsets, String hypernyms) {
     // First pass builds the index by reading strings to associate
@@ -33,6 +35,8 @@ public class WordNet {
       }
     }
     sap = new SAP(G);
+    distCache = new HashMap<String[], Integer>();
+    acstrCache = new HashMap<String[], Integer>();
   }
   
   // find the first id related to the input word
@@ -78,8 +82,16 @@ public class WordNet {
     {
       if (nounA.equals(nounB)) 
         return 0;
-      else 
-        return sap.length(id(nounA), id(nounB));
+      else if (distCache.containsKey(new String[]{nounA, nounB}) 
+             || distCache.containsKey(new String[]{nounB, nounA}))
+              return distCache.get(new String[]{nounB, nounA});
+      else
+      {
+        int length = sap.length(id(nounA), id(nounB));
+        distCache.put(new String[]{nounB, nounA}, length);
+        return length;
+      }
+        
     }
     else 
       throw new IllegalArgumentException();
@@ -87,19 +99,42 @@ public class WordNet {
   
   // in a shortest ancestral path (defined below)
   public String sap(String nounA, String nounB) {
-    if (!isNoun(nounA) || !isNoun(nounB)) 
+   /* if (!isNoun(nounA) || !isNoun(nounB)) 
       throw new IllegalArgumentException();  
     
     int acstr = sap.ancestor(id(nounA), id(nounB));
-    return st.get(acstr);
+    return st.get(acstr);*/
+    if (isNoun(nounA) && isNoun(nounB))
+    {
+      int acstr = -1;
+      if (acstrCache.containsKey(new String[]{nounA, nounB}) 
+             || acstrCache.containsKey(new String[]{nounB, nounA}))
+        acstr = acstrCache.get(new String[]{nounB, nounA});
+      else
+      {
+        acstr = sap.ancestor(id(nounA), id(nounB));
+        acstrCache.put(new String[]{nounB, nounA}, acstr);
+      }
+      return st.get(acstr);
+    }
+    else 
+      throw new IllegalArgumentException();
   }
     
   public static void main(String[] args) {
     //synsets.txt hypernyms.txt       
        WordNet wn = new WordNet(args[0], args[1]);
        String[] nouns = {"Lepidocybium", "discontentment"};
-       
-       StdOut.println(wn.sap(nouns[0], nouns[1]) + " " + wn.distance(nouns[0], nouns[1]));
+       long start, cnt = 0;
+       start = System.currentTimeMillis();
+       while(System.currentTimeMillis() - start < 5000)
+       {
+         wn.distance(nouns[0], nouns[1]);
+         cnt++;
+       }
+       StdOut.println(" cnt: "+ cnt);
+       //StdOut.println(wn.sap(nouns[0], nouns[1]) + " " + wn.distance(nouns[0], nouns[1]));
+      
 
   }
 
