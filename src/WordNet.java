@@ -10,7 +10,7 @@ public class WordNet {
     private ArrayList<String> st;  // index  -> string
     private Digraph G;
     private SAP sap;
-    private HashMap<String, ArrayList<Integer>> idset;
+    private HashMap<String, SET<Integer>> idset;
     
   public WordNet(String synsets, String hypernyms) {
     // First pass builds the index by reading strings to associate
@@ -22,13 +22,13 @@ public class WordNet {
       st.add(a[1]);
     }
     // create a cache set to link one word to a set of ids
-    idset = new HashMap<String, ArrayList<Integer>>();
+    idset = new HashMap<String, SET<Integer>>();
     for (int id = 0; id < st.size(); id++)
     {
       String[] a = st.get(id).split(" ");
       for (String ss : a)
       {
-        ArrayList<Integer> idtemp = new ArrayList<Integer>();
+        SET<Integer> idtemp = new SET<Integer>();
         if (idset.containsKey(ss))
         {
           idtemp = idset.get(ss); //read the old idset
@@ -51,7 +51,25 @@ public class WordNet {
       int v = Integer.parseInt(a[0]);
       for (int i = 1; i < a.length; i++) {
           int w = Integer.parseInt(a[i]);
+          //Check for cycle
+          for (int k : G.adj(w)) 
+          {
+            if (k == v) 
+              throw new IllegalArgumentException();
+          }
+          
           G.addEdge(v, w);
+      }
+    }
+    //Check for rooted DAG
+    int cnt = 0;
+    for (int i = 0; i < G.V(); i++) 
+    {
+      if (((Bag<Integer>) G.adj(i)).size() == 0) //count the root
+      {
+        cnt++;
+        if (cnt > 1)
+          throw new IllegalArgumentException();
       }
     }
     sap = new SAP(G);
@@ -62,8 +80,7 @@ public class WordNet {
   // the set of nouns (no duplicates), returned as an Iterable
   public Iterable<String> nouns()
   {
-
-    return st;
+    return idset.keySet();
   }
   
     // is the word a WordNet noun?
@@ -101,8 +118,8 @@ public class WordNet {
     
   public static void main(String[] args) {
     //synsets.txt hypernyms.txt       
-/*       WordNet wn = new WordNet(args[0], args[1]);
-       String[] nouns = {"Lepidocybium", "discontentment"};
+       WordNet wn = new WordNet(args[0], args[1]);
+       /*       String[] nouns = {"Lepidocybium", "discontentment"};
        long start, cnt = 0;
        start = System.currentTimeMillis();
        while (System.currentTimeMillis() - start < 3000)

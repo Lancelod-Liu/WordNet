@@ -29,9 +29,12 @@ public class Outcast {
     //Check for repeat
     strPair[0] = so;
     strPair[1] = si;
-    if (pathCache.containsKey(strPair[0]+strPair[1])) //use cache
+    if (pathCache.containsKey(strPair[1]+strPair[0]) || pathCache.containsKey(strPair[0]+strPair[1])) //use cache
     {
-     pathlen += pathCache.get(strPair[0]+strPair[1]);
+      if (pathCache.get(strPair[1]+strPair[0]) != null)
+        pathlen += pathCache.get(strPair[1]+strPair[0]);
+      else
+        pathlen += pathCache.get(strPair[0]+strPair[1]);
     }
     else //calculate and add it to cache
     {
@@ -40,8 +43,6 @@ public class Outcast {
      if (i != o) 
      {
       pathCache.put(strPair[0]+strPair[1], dist);
-      //swap the two nouns
-      pathCache.put(strPair[1]+strPair[0], dist);
      }
     }
    }

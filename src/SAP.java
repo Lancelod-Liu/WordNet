@@ -11,7 +11,7 @@ public class SAP {
   private Digraph G;
   private int pathlen, acstr;
   private HashMap<int[], int[]> sapCache; //first array for v-w, second for pathlen & acstr
-  private HashMap<String[], int[]> isapCache;
+  private HashMap<String, int[]> isapCache;
   // constructor takes a digraph (not necessarily a DAG)
   public SAP(Digraph G) {
     pv = null;
@@ -19,8 +19,20 @@ public class SAP {
     pathlen = -1;
     acstr = -1;
     sapCache = new HashMap<int[], int[]>();
-    isapCache = new HashMap<String[], int[]>();
+    isapCache = new HashMap<String, int[]>();
+    //Check for rooted DAG
+    int cnt = 0;
+    for (int i = 0; i < G.V(); i++) 
+    {
+      if (((Bag<Integer>) G.adj(i)).size() == 0) //count the root
+      {
+        cnt++;
+        if (cnt > 1)
+          throw new IllegalArgumentException();
+      }
+    }
     this.G = new Digraph(G);
+ 
   }
 
   // length of shortest ancestral path between v and w; -1 if  no such path
@@ -74,13 +86,13 @@ public class SAP {
       if (ww < 0 || ww >= G.V()) 
         throw new IndexOutOfBoundsException();
     }
-  //build key
-    String[] vw = new String[] {v.toString(), w.toString()};
-    String[] wv = new String[] {w.toString(), v.toString()};
   //check key
-    if (isapCache.containsKey(vw) || isapCache.containsKey(wv)) //cache is available
+    if (isapCache.containsKey(v.toString() + w.toString()) || isapCache.containsKey(w.toString()+ v.toString())) //cache is available
     {
-        return isapCache.get(vw)[0];
+      if (isapCache.get(v.toString()+ w.toString()) != null)
+        return isapCache.get(v.toString()+ w.toString())[0];
+      else
+        return isapCache.get(w.toString()+ v.toString())[0];
     }
     //initialize pathlen
     pathlen = -1;
@@ -105,7 +117,7 @@ public class SAP {
       }
     }
   //build the cache
-    isapCache.put(vw, new int[] {pathlen, acstr});
+    isapCache.put(v.toString() + w.toString(), new int[] {pathlen, acstr});
     return pathlen;
   }
 
@@ -160,13 +172,13 @@ public class SAP {
       if (ww < 0 || ww >= G.V()) 
         throw new IndexOutOfBoundsException();
     }
-    //build key
-    String[] vw = new String[] {v.toString(), w.toString()};
-    String[] wv = new String[] {w.toString(), v.toString()};
-    //check key
-    if (isapCache.containsKey(vw) || isapCache.containsKey(wv)) //cache is available
+  //check key
+    if (isapCache.containsKey(v.toString() + w.toString()) || isapCache.containsKey(w.toString()+ v.toString())) //cache is available
     {
-        return isapCache.get(vw)[1];
+      if (isapCache.get(v.toString()+ w.toString()) != null)
+        return isapCache.get(v.toString()+ w.toString())[1];
+      else
+        return isapCache.get(w.toString()+ v.toString())[1];
     }
     pathlen = -1; //initialize pathlen acstor
     acstr = -1;
@@ -190,22 +202,20 @@ public class SAP {
       }
     }
     //build the cache
-    isapCache.put(vw, new int[] {pathlen, acstr});
+    isapCache.put(v.toString()+ w.toString(), new int[] {pathlen, acstr});
     
     return acstr;
   }
   
   public static void main(String[] args) {
-    In in = new In("digraph1.txt");
-    Digraph G = new Digraph(in);
-    SAP sap = new SAP(G);
-    while (!StdIn.isEmpty()) {
+    //WordNet wordnet = new WordNet(args[0], args[1]);
+    /*while (!StdIn.isEmpty()) {
       int v = StdIn.readInt();
       int w = StdIn.readInt();
       int length   = sap.length(v, w);
       int ancestor = sap.ancestor(v, w);
       StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
-    }
+    }*/
   }
 
 }
